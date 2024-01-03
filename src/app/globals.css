@@ -57,3 +57,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.active {
+  @apply bg-primary text-white;
+}

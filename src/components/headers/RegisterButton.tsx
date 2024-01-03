@@ -7,9 +7,11 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 
-type Props = {};
+type Props = {
+  className?: string;
+};
 
-const RegisterButton = (props: Props) => {
+const RegisterButton = ({ className }: Props) => {
   const { data: session, status } = useSession();
   console.log("RegisterButton status", status);
   const router = useRouter();
@@ -17,29 +19,24 @@ const RegisterButton = (props: Props) => {
   const disabled = pathname.includes("/register") || status === "loading";
 
   return (
-    <div>
+    <>
       {session ? null : (
         <Button
           className={cn(
             buttonVariants({ variant: "outline" }),
             "text-primary border-primary hover:text-white hover:bg-primary transition-all duration-300",
-            { "text-gray-500 border-gray-500": disabled }
+            { "text-gray-500 border-gray-500": disabled },
+            className
           )}
           disabled={disabled}
           onClick={() => {
             router.push("/register");
           }}
         >
-          {/* <ReloadIcon
-            className={cn({
-              "mr-2 h-4 w-4 animate-spin": status === "loading",
-              hidden: status !== "loading",
-            })}
-          /> */}
           Register
         </Button>
       )}
-    </div>
+    </>
   );
 };
 

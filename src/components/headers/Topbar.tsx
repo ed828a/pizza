@@ -2,48 +2,48 @@
 
 import Link from "next/link";
 import React from "react";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { cn, dancingScript } from "@/lib/utils";
+import { dancingScript } from "@/lib/utils";
 import { ModeToggleButton } from "./ModeToggleButton";
 import Image from "next/image";
-import LogoAvatar from "./LogoAvatar";
-import { Button } from "../ui/button";
 import SignInOutButton from "./SignInOutButton";
 import RegisterButton from "./RegisterButton";
+import MobileMenu from "./MobileMenu";
+import ProfileAvatar from "./ProfileAvatar";
+import ProfileDropdownMenu from "./ProfileDropdownMenu";
 
 type Props = {};
 
 const Topbar = (props: Props) => {
   const userName = "edward";
-  const signOut = () => {};
   const showMobileNav = "showMobileNav";
-  const status = "authenticated";
 
   return (
-    <div>
+    <div className="pt-4 ">
       <header className="flex justify-between items-center relative">
         <div className="flex items-center gap-16">
           <Link href="/" className="text-primary font-semibold text-2xl">
             <div className=" rounded-full">
-              {/* <LogoAvatar /> */}
               <Image
                 src={"/hand_made_pizza_logo.png"}
                 width={58}
                 height={40}
                 alt="logo"
+                priority
               />
             </div>
           </Link>
 
           <Link
             href={"/profile"}
-            className={`${dancingScript.className} whitespace-nowrap font-semibold hidden sm:flex gap-4 items-center `}
+            className={`${dancingScript.className} whitespace-nowrap font-semibold hidden lg:flex gap-4 items-center text-3xl`}
           >
-            <span className={`text-primary text-3xl`}>Welcome</span>
-            <span className="capitalize font-bold text-3xl">{userName}</span>
+            <span className={``}>Welcome</span>
+            <span className="text-primary capitalize font-bold text-3xl">
+              {userName}
+            </span>
           </Link>
 
-          <nav className="hidden sm:flex items-center gap-8 text-gray-400 font-semibold">
+          <nav className="hidden md:flex items-center gap-8 text-gray-400 font-semibold">
             <Link href="/">Home</Link>
             <Link href="/menu">Menu</Link>
             <Link href="/#about">About</Link>
@@ -52,7 +52,8 @@ const Topbar = (props: Props) => {
         </div>
 
         <div>
-          <nav className="flex items-center sm:gap-4 text-gray-400 font-semibold">
+          <nav className="flex items-center xs:gap-2 sm:gap-4 text-gray-400 font-semibold">
+            <ProfileDropdownMenu />
             <div className="hidden sm:flex gap-4 ">
               <RegisterButton />
               <SignInOutButton />
@@ -60,16 +61,7 @@ const Topbar = (props: Props) => {
             <ModeToggleButton />
 
             <div className="block sm:hidden">
-              <button
-                type="button"
-                className="border-0 px-4"
-                onClick={() => {
-                  console.log("sandwitch called", showMobileNav);
-                  // setShowMobileNav((prev) => !prev);
-                }}
-              >
-                <HamburgerMenuIcon />
-              </button>
+              <MobileMenu userName={userName} />
             </div>
 
             {/* <Link href={"/cart"} className="relative">

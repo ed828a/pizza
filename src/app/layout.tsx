@@ -17,10 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} px-8 pt-4`}>
+      <body className={`${inter.className} min-w-96 px-8 `}>
         <ContextProviders>
-          <Topbar />
-          <main className="">{children}</main>
+          <div className="h-screen flex flex-col">
+            <Topbar />
+            <main className="grow">{children}</main>
+          </div>
         </ContextProviders>
       </body>
     </html>

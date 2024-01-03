@@ -1,102 +1,123 @@
 "use client";
 
-import React from "react";
-import {} from "react-dom";
+import { register } from "@/lib/serverActions";
+import { cn, dancingScript } from "@/lib/utils";
+import React, { useEffect } from "react";
+import { useFormState } from "react-dom";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+import RegisterSubmitButton from "./RegisterSubmitButton";
+import { Button } from "../ui/button";
+import Image from "next/image";
+import { redirect, useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 type Props = {};
 
 const RegisterForm = (props: Props) => {
-  const [state, dispatch] = useFormState(authenticate, undefined);
-  console.log("LoginForm state", state);
+  const [state, dispatch] = useFormState(register, undefined);
+  console.log("RegisterForm state", state);
+  const router = useRouter();
+
+  if (state?.data && state.message === "succeeded!") {
+    redirect("/api/auth/signin?callbackUrl=/");
+  }
 
   return (
-    <div>
-      <form action={dispatch} className="space-y-3">
-        <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-          <h1 className={`mb-3 text-2xl`}>Please log in to continue.</h1>
-          <div className="w-full">
-            <div>
-              <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <div className="relative">
-                <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  id="email"
-                  type="email"
-                  name="email"
-                  placeholder="Enter your email address"
-                  required
-                />
-                <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <label
-                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  id="password"
-                  type="password"
-                  name="password"
-                  placeholder="Enter password"
-                  required
-                  minLength={6}
-                />
-                <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-              </div>
-            </div>
-          </div>
-          <LoginButton />
-          <div
-            className="flex h-8 items-end space-x-1"
-            aria-live="polite"
-            aria-atomic="true"
+    <div className="min-w-80">
+      <Card className="bg-gray-100 dark:bg-inherit">
+        <CardHeader className="">
+          <CardTitle
+            className={"flex flex-col justify-center items-center py-4 px-8"}
           >
-            {/* Add form errors here */}
-            {state === "CredentialsSignin" && (
-              <>
+            <Image
+              src="/pizza-logo.png"
+              height={80}
+              width={100}
+              alt="pizza"
+              className=""
+            />
+            <span
+              className={cn(
+                "capitalize text-primary dark text-5xl grow",
+                dancingScript.className
+              )}
+            >
+              register
+            </span>
+          </CardTitle>
+          <CardDescription className="text-gray-500 text-center ">
+            {state?.isError ? (
+              <div className="flex gap-1">
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-500">
-                  Invalid credentials: {state}
-                </p>
-              </>
+                <span className="text-sm text-red-500">
+                  Something went wrong, try again.
+                </span>
+              </div>
+            ) : (
+              <span>create your own account</span>
             )}
-          </div>
-        </div>
-      </form>
-
-      <form action="" className="block max-w-lg mx-auto min-w-1/2">
-        <input
-          type="email"
-          name="email"
-          placeholder="email"
-          onChange={handleChange}
-          value={emailValue}
-          required
-          disabled={inputDisabled}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          name="password"
-          required
-          onChange={handleChange}
-          value={passwordValue}
-          disabled={inputDisabled}
-        />
-        <button type="submit" className="capitalize" disabled={inputDisabled}>
-          {buttonLabel}
-        </button>
-      </form>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={dispatch} className="flex flex-col gap-4">
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5 focus:border-none">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Your account name"
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="Your account email"
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  placeholder="Your secret password"
+                />
+              </div>
+            </div>
+            <div className="grow flex justify-between items-center pt-4 ">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  router.push("/");
+                }}
+                className=""
+              >
+                Cancel
+              </Button>
+              <RegisterSubmitButton className={""} />
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

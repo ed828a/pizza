@@ -197,10 +197,10 @@ export const authOptions: NextAuthOptions = {
       });
       return true;
     },
-    // async redirect({ url, baseUrl }) {
-    // the returned url is the url that after the user successfully logs in, the app redirects users to.
-    //   return baseUrl;
-    // },
+    async redirect({ url, baseUrl }) {
+      // the returned url is the url that after the user successfully logs in, the app redirects users to.
+      return baseUrl;
+    },
     async session({ session, token, user }) {
       console.log("authOptions callback session: ", { session, token, user });
       // for client to use role

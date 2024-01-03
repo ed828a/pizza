@@ -20,17 +20,17 @@ export function ModeToggleButton() {
       <DropdownMenuTrigger asChild>
         <div className="group">
           <Button
-            className="text-primary border-primary hover:bg-primary hover:text-white transition-all duration-300 group"
+            className="text-primary border-gray-200 hover:border-primary dark:border-gray-800  hover:dark:border-primary transition-all duration-300 group"
             variant="outline"
             size="icon"
           >
-            <SunIcon className="text-primary hover:text-white h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <MoonIcon className="text-primary hover:text-white absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <SunIcon className="text-primary h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <MoonIcon className="text-primary absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="bg-gray-50 dark:bg-inherit">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
         </DropdownMenuItem>

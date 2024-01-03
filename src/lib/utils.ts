@@ -1,17 +1,33 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Inter, Sevillana, Dancing_Script } from "next/font/google";
+import {
+  Inter,
+  Sevillana,
+  Dancing_Script,
+  Merriweather,
+} from "next/font/google";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export const inter = Inter({ subsets: ["latin"] });
+export const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  style: ["italic", "normal"],
+});
+
 export const sevillana = Sevillana({ subsets: ["latin"], weight: "400" });
 export const dancingScript = Dancing_Script({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
+  style: ["normal"],
 });
+
+export const phoneRegex = new RegExp(
+  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
+);
 
 /**
  * Email HTML body
