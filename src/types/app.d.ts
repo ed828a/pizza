@@ -14,3 +14,15 @@ type CredentialState = {
   data?: undefined;
   isError: boolean;
 };
+
+type ProfileType = {
+  name: string;
+  email: string;
+  image: string;
+  phone: string;
+  streetAddress: string;
+  city: string;
+  postcode: string;
+  country: string;
+  role: string;
+};

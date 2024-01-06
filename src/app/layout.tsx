@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Topbar from "@/components/headers/Topbar";
-import { ThemeContextProvider } from "@/components/contexts/ThemeContextProvider";
 import { inter } from "@/lib/utils";
 import ContextProviders from "@/components/contexts/ContextProviders";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,6 +18,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} min-w-96 px-8 `}>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <ContextProviders>
           <div className="h-screen flex flex-col">
             <Topbar />

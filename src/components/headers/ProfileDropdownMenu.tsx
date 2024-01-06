@@ -19,11 +19,9 @@ import SignInOutButton from "./SignInOutButton";
 import { useRouter } from "next/navigation";
 import ProfileAvatar from "./ProfileAvatar";
 
-type Props = {
-  userName: string;
-};
+type Props = {};
 
-const ProfileDropdownMenu = ({ userName }: Props) => {
+const ProfileDropdownMenu = (props: Props) => {
   const router = useRouter();
 
   return (

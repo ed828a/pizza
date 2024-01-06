@@ -18,9 +18,8 @@ const MembersLayout = async ({ children }: Props) => {
 
   await dbConnect();
 
-  // @ts-expect-error
   const user = await User.findOne({ email: session.user.email });
-  console.log("MembersLayout user", user);
+  // console.log("MembersLayout user", user);
   const admin = user.role === "admin";
 
   return (

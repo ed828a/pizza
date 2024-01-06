@@ -21,7 +21,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
       // add a role in profile
       profile(profile) {
-        console.log("Github profile", profile);
+        // console.log("Github profile", profile);
 
         let userRole = "Github User";
         if (profile?.email === "ed828a@gmail.com") {
@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       // add a role
       profile(profile) {
-        console.log("Google profile", profile);
+        // console.log("Google profile", profile);
 
         let userRole = "Google User";
         if (profile?.email === "ed828a@gmail.com") {
@@ -188,42 +188,69 @@ export const authOptions: NextAuthOptions = {
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("signIn callback: ", {
-        user,
-        account,
-        profile,
-        email,
-        credentials,
-      });
+      // console.log("signIn callback: ", {
+      //   user,
+      //   account,
+      //   profile,
+      //   email,
+      //   credentials,
+      // });
       return true;
     },
     async redirect({ url, baseUrl }) {
       // the returned url is the url that after the user successfully logs in, the app redirects users to.
       return baseUrl;
     },
-    async session({ session, token, user }) {
-      console.log("authOptions callback session: ", { session, token, user });
-      // for client to use role
-      if (session?.user) session.user.role = token.role;
 
-      return session;
-    },
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token, user, trigger, session }) {
       console.log("authOptions callback jwt: ", {
         token,
         user,
-        account,
-        profile,
-        isNewUser,
+        trigger,
+        session,
       });
-      // for server to use role
-      if (user) token.role = user.role;
+      // this is the case of signin
+      if (user && trigger === "signIn") {
+        console.log("user.image", user.image);
+        if (user.image) {
+          token.image = user.image;
+        }
+        // pass the role from user to token
+        return {
+          ...token,
+          role: user.role,
+        };
+      }
+
+      // case of update session
+      if (trigger === "update" && session?.image) {
+        token.image = session.image;
+        token.picture = session.image;
+      }
 
       // for session.user.image
-      if (!token?.picture && (user as any)?.picture) {
-        token.picture = (user as any)?.picture;
-      }
+      // if (!token?.picture && (user as any)?.picture) {
+      //   token.image = (user as any)?.picture;
+      //   token.picture = (user as any)?.picture;
+      // }
+
       return token;
+    },
+
+    async session({ session, token, user }) {
+      // console.log("authOptions callback session: ", { session, token, user });
+      // for client to use role
+      if (session?.user)
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            role: token.role,
+            image: token.image,
+          },
+        };
+
+      return session;
     },
   },
 

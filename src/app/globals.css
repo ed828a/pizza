@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "react-toastify/dist/ReactToastify.css";
 
 @layer base {
   :root {
@@ -60,4 +61,8 @@
 
 .active {
   @apply bg-primary text-white;
+}
+
+.section {
+  @apply flex justify-center items-center pt-16;
 }

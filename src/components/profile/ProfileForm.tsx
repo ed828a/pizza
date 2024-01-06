@@ -1,72 +1,25 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
-import { cn, phoneRegex } from "@/lib/utils";
-import { toast } from "../ui/use-toast";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
-
-const profileFormSchema = z.object({
-  username: z
-    .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Username must not be longer than 30 characters.",
-    }),
-  email: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
-    .email(),
-  phone: z
-    .string()
-    .regex(phoneRegex, "Invalid Number!")
-    .min(10, { message: "Must be a valid mobile number" })
-    .max(14, { message: "Must be a valid mobile number" }),
-  street: z.string().min(3, { message: "Must be a valid street address" }),
-  city: z.string().min(3, { message: "Must be a valid city" }),
-  postcode: z
-    .string()
-    .regex(new RegExp(/^[0-9]{4}$/), { message: "Invalid Post code!" }),
-  country: z.string().min(3, { message: "Invalid country!" }),
-});
-
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
-
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {};
+import { redirect, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import LabelInput from "../share/LabelInput";
+import { Button } from "../ui/button";
+import { updateProfileAction } from "@/lib/serverActions";
+import { useFormState } from "react-dom";
 
 type Props = {
-  user?: {
-    name: string;
-    email: string;
-    image: string;
-    phone: string;
-    streetAddress: string;
-    city: string;
-    postcode: string;
-    country: string;
-    role: string;
-  };
+  user?: ProfileType;
+  callbackUrl: string;
 };
 
-export function ProfileForm({ user }: Props) {
+const ProfileForm = ({ user, callbackUrl }: Props) => {
+  const router = useRouter();
+  const { data: session, status, update } = useSession();
   const [userData, setUserData] = useState({
+    email: user?.email,
     userName: user?.name,
     userImage: user?.image,
     phone: user?.phone,
@@ -77,11 +30,58 @@ export function ProfileForm({ user }: Props) {
     role: user?.role,
   });
 
+  const initialState = { message: null };
+
+  const updateProfileActionWithEmail = updateProfileAction.bind(
+    null,
+    callbackUrl,
+    user?.email!
+  );
+
+  const [state, dispatch] = useFormState(
+    updateProfileActionWithEmail,
+    initialState
+  );
+  console.log("state", state);
+
+  console.log("ProfileForm session", session);
+
+  const enableSubmit =
+    userData.email !== user?.email ||
+    userData.userName !== user?.name ||
+    userData.phone !== user?.phone ||
+    userData.streetAddress !== user?.streetAddress ||
+    userData.city !== user?.city ||
+    userData.postcode !== user?.postcode ||
+    userData.country !== user?.country ||
+    userData.role !== user?.role;
+
+  console.log("enableSubmit", enableSubmit);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  console.log("userData", userData);
+
+  if (status === "unauthenticated") {
+    return redirect("/login");
+  }
+
+  const updateSessionImage = async (image: string) => {
+    if (
+      session?.user.email &&
+      user?.email &&
+      session?.user.email === user?.email
+    ) {
+      console.log("userData.userImage", userData.userImage);
+      const updatedSession = await update({ image: image });
+      console.log("updatedSession", updatedSession);
+      // router.refresh();
+    }
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     // console.log(e);
 
@@ -90,8 +90,11 @@ export function ProfileForm({ user }: Props) {
       const data = new FormData();
       data.set("file", files[0]);
 
-      try {
-        const response = await fetch("/api/upload", {
+      console.log("handleImageChange userData.email", userData.email);
+      data.set("email", userData.email!);
+
+      const uploadPromise = new Promise(async (resolve, reject) => {
+        const response = await fetch("/api/cloudinary/upload", {
           method: "POST",
           body: data,
           headers: {
@@ -101,221 +104,157 @@ export function ProfileForm({ user }: Props) {
 
         if (response.ok) {
           const user = await response.json();
-          //   setUserImage(user.image);
+          console.log("handleImageChange server returned user", user);
           setUserData((prev) => ({ ...prev, userImage: user.image }));
+          resolve(user.image);
+        } else {
+          reject({ message: "uploading image failed" });
         }
+      });
 
-        console.log("handled File-change user: ", user);
-      } catch (error) {
-        console.log(error);
-      }
+      const result = await toast.promise(uploadPromise, {
+        pending: "Uploading...",
+        success: "Uploading completed.",
+        error: "Uploading failed.",
+      });
+
+      // console.log("handleImageChange result", result);
+      await updateSessionImage(result as string);
     }
   };
 
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
-    defaultValues,
-    mode: "onChange",
-  });
+  console.log("userData", userData);
+  console.log("user", user);
+  const sessionUser = session?.user;
+  console.log("sessionUser", sessionUser);
 
-  function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const notify = () => toast.success("Wow so easy!");
 
   return (
-    <div className="flex justify-center items-start gap-8 mt-12 max-w-5xl">
-      <div className="flex flex-col items-center">
-        <Image
-          src={userData.userImage ? userData.userImage : "/images/profile.jpg"}
-          width={110}
-          height={110}
-          alt="avatar"
-          className="rounded-lg mb-2 "
-        />
-        <label className="w-full">
-          <input
-            id="image"
-            name="image"
-            type="file"
-            className="hidden"
-            onChange={(e) => handleFileChange(e)}
-          />
-          <span className="block border border-gray-300 rounded-lg p-2 text-center text-gray-400 cursor-pointer">
-            Edit
-          </span>
-        </label>
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => {
-              console.log("field", field);
-
-              return (
-                <FormItem>
-                  <FormLabel htmlFor="username">Full name</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="username"
-                      type="text"
-                      placeholder="First and last name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => {
-              console.log("field", field);
-
-              return (
-                <FormItem>
-                  <FormLabel htmlFor="email">Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="email"
-                      type="email"
-                      disabled
-                      placeholder="text@examples.com"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => {
-              console.log("field", field);
-
-              return (
-                <FormItem>
-                  <FormLabel htmlFor="phone">Phone number</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="phone"
-                      type="text"
-                      placeholder="phone number"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="street"
-            render={({ field }) => {
-              console.log("field", field);
-
-              return (
-                <FormItem>
-                  <FormLabel htmlFor="street">Street address</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="street"
-                      type="text"
-                      placeholder="your address"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <div className="flex gap-16">
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => {
-                console.log("field", field);
-
-                return (
-                  <FormItem>
-                    <FormLabel htmlFor="city">City</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="city"
-                        type="text"
-                        placeholder="City"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-            <FormField
-              control={form.control}
-              name="postcode"
-              render={({ field }) => {
-                console.log("field", field);
-
-                return (
-                  <FormItem>
-                    <FormLabel htmlFor="postcode">Postcode</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="postcode"
-                        type="text"
-                        placeholder="Post code"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
+    <div className="w-full max-w-screen-md ">
+      <div className="flex flex-col sm:flex-row gap-4 items-stretch justify-center ">
+        <div className="p-4">
+          <div className="flex flex-col justify-between ">
+            <div className="flex flex-col items-center">
+              <Image
+                src={
+                  userData.userImage
+                    ? userData.userImage
+                    : "/images/profile.jpg"
+                }
+                width={180}
+                height={180}
+                alt="avatar"
+                className="rounded-lg mb-2 "
+              />
+              <label className="w-full">
+                <input
+                  id="image"
+                  name="image"
+                  type="file"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+                <span className="block border border-gray-300 hover:border-primary rounded-lg p-2 text-center text-gray-400 hover:text-primary cursor-pointer">
+                  Edit
+                </span>
+              </label>
+            </div>
           </div>
+        </div>
+        <div className="flex justify-center items-center px-4">
+          <form action={dispatch}>
+            <div className="flex flex-col gap-4 p-2">
+              <LabelInput
+                label="Full name"
+                id="username"
+                name="userName"
+                type="text"
+                value={userData.userName || ""}
+                handleChange={handleChange}
+                placeholder="First and last name"
+              />
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
+                <LabelInput
+                  label="Email"
+                  id="email"
+                  name="email"
+                  type="email"
+                  disabled={true}
+                  defaultValue={userData?.email}
+                />
+                <LabelInput
+                  label="role"
+                  id="role"
+                  name="role"
+                  type="text"
+                  disabled={sessionUser?.role !== "admin"}
+                  value={userData?.role || "user"}
+                  handleChange={handleChange}
+                />
+              </div>
 
-          <FormField
-            control={form.control}
-            name="country"
-            render={({ field }) => {
-              console.log("field", field);
+              <LabelInput
+                label=" Phone number"
+                id="phone"
+                name="phone"
+                type="tel"
+                value={userData.phone || ""}
+                handleChange={handleChange}
+                placeholder="Phone number"
+              />
 
-              return (
-                <FormItem>
-                  <FormLabel htmlFor="country">Country</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="country"
-                      type="text"
-                      placeholder="Country"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
+              <LabelInput
+                label="Street address"
+                id="streetAddress"
+                name="streetAddress"
+                type="text"
+                value={userData.streetAddress || ""}
+                handleChange={handleChange}
+                placeholder="Street address"
+              />
 
-          <Button type="submit">Update profile</Button>
-        </form>
-      </Form>
+              <div className="flex flex-col sm:flex-row gap-x-4 ">
+                <LabelInput
+                  label="City"
+                  id="city"
+                  name="city"
+                  type="text"
+                  value={userData.city || ""}
+                  handleChange={handleChange}
+                  placeholder="City"
+                />
+
+                <LabelInput
+                  label="Postcode"
+                  id="postcode"
+                  name="postcode"
+                  type="text"
+                  value={userData.postcode || ""}
+                  handleChange={handleChange}
+                  placeholder="Postcode"
+                />
+
+                <LabelInput
+                  label="Country"
+                  id="country"
+                  name="country"
+                  type="text"
+                  value={userData.country || ""}
+                  handleChange={handleChange}
+                  placeholder="Country"
+                />
+              </div>
+
+              <Button type="submit" disabled={!enableSubmit}>
+                Save
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default ProfileForm;

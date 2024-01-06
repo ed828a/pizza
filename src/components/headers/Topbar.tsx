@@ -10,12 +10,14 @@ import RegisterButton from "./RegisterButton";
 import MobileMenu from "./MobileMenu";
 import ProfileAvatar from "./ProfileAvatar";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 const Topbar = (props: Props) => {
   const userName = "edward";
-  const showMobileNav = "showMobileNav";
+  const { data: session } = useSession();
+  console.log("Topbar session", session);
 
   return (
     <div className="pt-4 ">
@@ -53,7 +55,8 @@ const Topbar = (props: Props) => {
 
         <div>
           <nav className="flex items-center xs:gap-2 sm:gap-4 text-gray-400 font-semibold">
-            <ProfileDropdownMenu />
+            {session ? <ProfileDropdownMenu /> : null}
+
             <div className="hidden sm:flex gap-4 ">
               <RegisterButton />
               <SignInOutButton />

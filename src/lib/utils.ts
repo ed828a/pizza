@@ -95,3 +95,33 @@ export function html({
 export function text({ url, host }: { url: string; host: string }) {
   return `Sign in to ${host}\n${url}\n\n`;
 }
+
+export function areObjectsEqual(obj1: Object, obj2: Object) {
+  const entries1 = Object.entries(obj1);
+  const entries2 = Object.entries(obj2);
+
+  if (entries1.length !== entries2.length) {
+    console.log("length failed: ", entries1.length, "---", entries2.length);
+    return false;
+  }
+
+  for (const [key, value] of entries1) {
+    if (
+      !entries2.some(([k, v]) => {
+        console.log(`entries1 ${key}-${value} <---> entries2 ${k} - ${v}`);
+        return k === key && v === value;
+      })
+    ) {
+      console.log(
+        `elements comparing failed: entries1 ${key}-${value} <---> entries2`
+      );
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export const toPOJO = (obj: any) => {
+  return JSON.parse(JSON.stringify(obj));
+};

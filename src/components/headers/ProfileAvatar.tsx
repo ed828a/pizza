@@ -9,11 +9,14 @@ type Props = {
 
 const ProfileAvatar = ({ src }: Props) => {
   const { data: session } = useSession();
-  // @ts-expect-error
-  src = session?.user.image;
+  if (!session) return null;
+
+  console.log("ProfileAvatar session", session);
+  const user: any = session.user;
+
   return (
     <Avatar>
-      <AvatarImage src={src ? src : "/images/profile.jpg"} />
+      <AvatarImage src={user ? user.image : "/images/profile.jpg"} />
       <AvatarFallback>profile</AvatarFallback>
     </Avatar>
   );
