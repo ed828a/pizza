@@ -13,10 +13,11 @@ type Props = {
 
 const RegisterButton = ({ className }: Props) => {
   const { data: session, status } = useSession();
-  console.log("RegisterButton status", status);
+  // console.log("RegisterButton status", status);
+
   const router = useRouter();
   const pathname = usePathname();
-  const disabled = pathname.includes("/register") || status === "loading";
+  const disabled = pathname.includes("/register");
 
   return (
     <>

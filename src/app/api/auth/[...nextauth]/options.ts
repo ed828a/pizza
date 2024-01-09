@@ -203,12 +203,13 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user, trigger, session }) {
-      console.log("authOptions callback jwt: ", {
-        token,
-        user,
-        trigger,
-        session,
-      });
+      // console.log("authOptions callback jwt: ", {
+      //   token,
+      //   user,
+      //   trigger,
+      //   session,
+      // });
+
       // this is the case of signin
       if (user && trigger === "signIn") {
         console.log("user.image", user.image);
@@ -227,12 +228,6 @@ export const authOptions: NextAuthOptions = {
         token.image = session.image;
         token.picture = session.image;
       }
-
-      // for session.user.image
-      // if (!token?.picture && (user as any)?.picture) {
-      //   token.image = (user as any)?.picture;
-      //   token.picture = (user as any)?.picture;
-      // }
 
       return token;
     },

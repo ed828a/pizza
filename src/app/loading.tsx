@@ -1,4 +1,5 @@
 import LoadingSpinner from "@/components/icons/LoadingSpinner";
+import { ReloadIcon } from "@radix-ui/react-icons";
 import React from "react";
 
 type Props = {};
@@ -7,6 +8,7 @@ const RootLoading = (props: Props) => {
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center">
       <LoadingSpinner className="text-primary w-28" />
+      {/* <ReloadIcon className="text-primary w-28" /> */}
       <h1 className="uppercase">Loading...</h1>
     </div>
   );

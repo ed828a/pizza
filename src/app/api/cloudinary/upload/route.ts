@@ -1,6 +1,5 @@
 import {
   saveImageLinkByEmailToMongoDB,
-  saveImageLinkToMongoDB,
   uploadImageToCloudinary,
 } from "@/lib/cloudinaryActions";
 import { NextResponse } from "next/server";
@@ -21,11 +20,15 @@ export async function POST(req: Request) {
   const imageLinkObject = await uploadImageToCloudinary(file);
   const email = data.get("email")?.toString();
 
-  const user = await saveImageLinkByEmailToMongoDB(
-    imageLinkObject.image,
-    email
-  );
-  // console.log("after uploading image, user", user);
+  if (email) {
+    const user = await saveImageLinkByEmailToMongoDB(
+      imageLinkObject.image,
+      email
+    );
+    // console.log("after uploading image, user", user);
 
-  return NextResponse.json(user);
+    return NextResponse.json(user);
+  } else {
+    return NextResponse.json(imageLinkObject);
+  }
 }

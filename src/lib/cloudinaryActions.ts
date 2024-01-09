@@ -1,3 +1,5 @@
+"use server";
+
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";
 import { getServerSession } from "next-auth";
@@ -12,7 +14,6 @@ cloudinary.config({
 });
 
 export async function create(formData: FormData) {
-  "use server";
   console.log("call create now");
   const file = formData.get("image") as File;
   const arrayBuffer = await file.arrayBuffer(); // Buffer version file for uploading
@@ -64,6 +65,7 @@ export const uploadImageToCloudinary = async (file: File) => {
   });
 
   console.log("result", result);
+
   return { image: result.secure_url };
 };
 

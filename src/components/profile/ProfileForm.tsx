@@ -9,6 +9,8 @@ import LabelInput from "../share/LabelInput";
 import { Button } from "../ui/button";
 import { updateProfileAction } from "@/lib/serverActions";
 import { useFormState } from "react-dom";
+import Link from "next/link";
+import LeftArrow from "../icons/LeftArrow";
 
 type Props = {
   user?: ProfileType;
@@ -123,15 +125,17 @@ const ProfileForm = ({ user, callbackUrl }: Props) => {
     }
   };
 
-  console.log("userData", userData);
-  console.log("user", user);
+  console.log("ProfileForm userData", userData);
+  console.log("ProfileForm user", user);
   const sessionUser = session?.user;
-  console.log("sessionUser", sessionUser);
-
-  const notify = () => toast.success("Wow so easy!");
+  console.log("ProfileForm sessionUser", sessionUser);
 
   return (
-    <div className="w-full max-w-screen-md ">
+    <div className="w-full max-w-screen-md flex flex-col  ">
+      <Link href={callbackUrl} className="self-end mr-8  h-4">
+        <LeftArrow className="text-primary w-10 h-6 ml-auto " />
+      </Link>
+
       <div className="flex flex-col sm:flex-row gap-4 items-stretch justify-center ">
         <div className="p-4">
           <div className="flex flex-col justify-between ">

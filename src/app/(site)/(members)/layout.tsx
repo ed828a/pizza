@@ -10,7 +10,7 @@ type Props = { children: React.ReactNode };
 
 const MembersLayout = async ({ children }: Props) => {
   const session = await getServerSession(authOptions);
-  console.log("session", session);
+  // console.log("MembersLayout session", session);
 
   if (!session || !session.user) {
     return redirect("/login");

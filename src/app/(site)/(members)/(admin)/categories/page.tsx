@@ -1,40 +1,25 @@
-"use client";
-
-import { useSession } from "next-auth/react";
+import CategoriesContent from "@/components/categories/CategoriesContent";
+import dbConnect from "@/lib/dbConnect";
+import Category from "@/models/category";
 import React from "react";
 
 type Props = {};
 
-const CategoriesPage = (props: Props) => {
-  const { data: session, status, update } = useSession();
-
-  const updateSession = async () => {
-    await update({
-      ...session,
-      user: {
-        ...session?.user,
-        name: "Brother Chui",
-      },
-    });
-  };
+const CategoriesPage = async (props: Props) => {
+  await dbConnect();
+  const categories = await Category.find();
+  const categoriesArray = categories.map((cat) => {
+    // console.log("cat", cat);
+    return {
+      id: cat._id.toString(),
+      name: cat.name,
+    };
+  });
 
   return (
-    <div>
-      <h2>CategoriesPage</h2>
-      <pre>{JSON.stringify(session, null, 4)}</pre>
-      <button
-        className="border bg-violet-600 text-white rounded px-4 py-2 capitalize"
-        onClick={updateSession}
-      >
-        update session
-      </button>
-      <button
-        className="border bg-violet-600 text-white rounded px-4 py-2 capitalize"
-        onClick={() => console.log("session", session)}
-      >
-        log session
-      </button>
-    </div>
+    <section className="section">
+      <CategoriesContent categories={categoriesArray} />
+    </section>
   );
 };
 

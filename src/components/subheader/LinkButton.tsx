@@ -14,12 +14,12 @@ const LinkButton = ({ children, href }: Props) => {
   return (
     <Link
       className={cn(
-        "text-primary hover:border-primary",
+        "text-primary hover:border-primary ",
         buttonVariants({ variant: "outline" }),
         {
           active: pathname.startsWith(href),
         },
-        "hover:text-primary hover:dark:text-inherit"
+        "hover:text-primary hover:dark:text-inherit rounded-full"
       )}
       href={href}
     >

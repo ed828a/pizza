@@ -11,7 +11,7 @@ const ProfileAvatar = ({ src }: Props) => {
   const { data: session } = useSession();
   if (!session) return null;
 
-  console.log("ProfileAvatar session", session);
+  // console.log("ProfileAvatar session", session);
   const user: any = session.user;
 
   return (

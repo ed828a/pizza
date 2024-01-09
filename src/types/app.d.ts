@@ -26,3 +26,25 @@ type ProfileType = {
   country: string;
   role: string;
 };
+
+type CategoryType = {
+  name: string;
+};
+
+type AddonType = {
+  id?: string;
+  name: string;
+  price: string;
+};
+
+type MenuItemType = {
+  id?: string | null;
+  name: string;
+  image: string;
+  description: string;
+  category: string;
+  basePrice: number;
+  sizes: AddonType[];
+  extraIngredients: AddonType[];
+  bestSeller: boolean;
+};

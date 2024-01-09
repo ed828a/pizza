@@ -8,7 +8,7 @@ type Props = {};
 
 const SignInOutButton = (props: Props) => {
   const { data: session, status } = useSession();
-  console.log("SignInOutButton session", session);
+  // console.log("SignInOutButton session", session);
   console.log("SignInOutButton status", status);
 
   return (
@@ -16,11 +16,7 @@ const SignInOutButton = (props: Props) => {
       {session ? (
         <Button onClick={() => signOut()}>Sign out</Button>
       ) : (
-        <Button
-          className={""}
-          onClick={() => signIn()}
-          disabled={status === "loading"}
-        >
+        <Button className={""} onClick={() => signIn()}>
           Sign in
         </Button>
       )}

@@ -9,7 +9,7 @@ type Props = {
 
 const AdminLayout = async ({ children }: Props) => {
   const session = await getServerSession(authOptions);
-  console.log("AdminLayout session", session);
+  // console.log("AdminLayout session", session);
 
   if (!session || !session.user || session.user.role !== "admin") {
     return redirect("/unauthorized");

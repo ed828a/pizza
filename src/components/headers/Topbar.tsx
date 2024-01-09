@@ -8,7 +8,6 @@ import Image from "next/image";
 import SignInOutButton from "./SignInOutButton";
 import RegisterButton from "./RegisterButton";
 import MobileMenu from "./MobileMenu";
-import ProfileAvatar from "./ProfileAvatar";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
 import { useSession } from "next-auth/react";
 
