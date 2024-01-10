@@ -26,7 +26,7 @@ const LabelSelect = ({
   defaultValue,
 }: Props) => {
   return (
-    <div className="relative">
+    <div className="relative pt-1">
       <label
         htmlFor="category"
         className="text-gray-400 text-sm absolute top-0 left-2"

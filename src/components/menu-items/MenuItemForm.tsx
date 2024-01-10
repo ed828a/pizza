@@ -8,6 +8,7 @@ import { createOrUpdateMenuItemAction } from "@/lib/menuItemsActions";
 import MenuItemAddons from "./MenuItemAddons";
 import LabelCheckbox from "../share/LabelCheckbox";
 import { Button } from "../ui/button";
+import LabelMoneyInput from "../share/LabelMoneyInput";
 
 type Props = {
   menuItem: MenuItemType | null;
@@ -41,6 +42,30 @@ const MenuItemForm = ({
     setMenuItem((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const addAddon = ({ name, price }: AddonType) => {
+    setSizes((prev: AddonType[]) => [...prev, { name, price }]);
+  };
+
+  function editAddon(
+    ev: React.ChangeEvent<HTMLInputElement>,
+    index: number
+    // property: "name" | "price"
+  ): void {
+    setSizes((prev: AddonType[]) => {
+      const newSizes = [...prev];
+      const a = newSizes[index];
+      newSizes[index] = { ...a, [ev.target.name]: ev.target.value };
+      console.log("newSize", newSizes);
+      return newSizes;
+    });
+    console.log(ev.target.name, ev.target.value);
+  }
+
+  function removeAddon(index: number) {
+    //@ts-expect-error
+    setSizes((prev: any) => prev.filter((v, i: number) => i !== index));
+  }
+
   console.log("MenuItemForm sizes", sizes);
   console.log("extraIngredients", extraIngredients);
   return (
@@ -61,7 +86,8 @@ const MenuItemForm = ({
             id="description"
             name="description"
             type="text"
-            defaultValue={menuItem?.description}
+            value={menuItem?.description}
+            handleChange={handleChange}
           />
           <LabelSelect
             label="Category"
@@ -77,28 +103,32 @@ const MenuItemForm = ({
             opions={categories}
             className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100"
           />
-          <LabelInput
+          <LabelMoneyInput
             label="Base Price"
             id="basePrice"
             name="basePrice"
             type="text"
-            // value={(menuItem?.basePrice || 0).toString()}
-            value={`$${menuItem?.basePrice || 0} `}
+            value={
+              menuItem && menuItem.basePrice
+                ? menuItem.basePrice.toString()
+                : ""
+            }
+            // value={menuItem?.basePrice || 0}
             handleChange={handleChange}
           />
-          <div className="">
+          <div className="w-[400px]">
             <MenuItemAddons
               propName="Sizes"
               addLabel="Add item size"
               addons={sizes}
               setAddons={setSizes}
             />
-            <MenuItemAddons
+            {/* <MenuItemAddons
               propName="Extra Ingredients"
               addLabel="Add more ingredients"
               addons={extraIngredients}
               setAddons={setExtraIngredients}
-            />
+            /> */}
           </div>
           <LabelCheckbox
             label="Best Seller"
@@ -107,7 +137,12 @@ const MenuItemForm = ({
             type="checkbox"
             className="accent-primary"
             checked={menuItem?.bestSeller}
-            handleChange={handleChange}
+            handleChange={(e) =>
+              setMenuItem((prev: any) => ({
+                ...prev,
+                bestSeller: e.target.checked,
+              }))
+            }
           />
 
           <div className="mt-4">

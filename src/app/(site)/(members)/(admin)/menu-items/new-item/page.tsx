@@ -3,7 +3,6 @@ import ShowAllMenuItemsLink from "@/components/menu-items/ShowAllMenuItemsLink";
 import dbConnect from "@/lib/dbConnect";
 import Category from "@/models/category";
 import React from "react";
-import { deoptional } from "zod";
 
 type Props = {};
 

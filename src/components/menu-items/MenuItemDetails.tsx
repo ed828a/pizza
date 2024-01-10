@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import MenuItemImageUpload from "./MenuItemImageUpload";
 import MenuItemForm from "./MenuItemForm";
+import MenuItemForm2 from "./MenuItemForm2";
 
 type Props = {
   categories: { id: string; name: string }[];
@@ -25,6 +26,10 @@ const MenuItemDetails = ({ categories, originalMenuItem }: Props) => {
 
   console.log("enableSubmit", enableSubmit);
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setMenuItem((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   return (
     <div className=" ">
       <div className="flex flex-col sm:flex-row gap-4">
@@ -35,6 +40,12 @@ const MenuItemDetails = ({ categories, originalMenuItem }: Props) => {
           categories={categories}
           disableSubmit={!enableSubmit}
         />
+        {/* <MenuItemForm2
+          itemState={menuItem!}
+          setItemState={setMenuItem}
+          categories={categories}
+          handleChange={handleChange}
+        /> */}
       </div>
     </div>
   );
