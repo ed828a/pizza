@@ -43,7 +43,7 @@ type MenuItemType = {
   image: string;
   description: string;
   category: string;
-  basePrice: number;
+  basePrice: string;
   sizes: AddonType[];
   extraIngredients: AddonType[];
   bestSeller: boolean;

@@ -1,22 +1,48 @@
 "use client";
 
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Up from "../icons/Up";
 import Down from "../icons/Down";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import AddonItem from "./AddonItem";
 
 type Props = {
-  propName: string;
-  addLabel: string;
-  addons: AddonType[];
-  setAddons: React.Dispatch<React.SetStateAction<AddonType[]>>;
+  addonName: string;
+  addonLabel: string;
+  setMenuItem: React.Dispatch<any>;
+  menuItem: MenuItemType | null;
 };
 
-const MenuItemAddons = ({ propName, addLabel, addons, setAddons }: Props) => {
+const MenuItemAddons = ({
+  addonName,
+  addonLabel,
+  setMenuItem,
+  menuItem,
+}: Props) => {
+  // console.log("MenuItemAddons menuItem", menuItem);
+  // console.log("addonName", addonName);
+  let init: AddonType[] = [];
+  if (addonName === "sizes" && menuItem && menuItem.sizes.length > 0) {
+    init = menuItem.sizes;
+  } else if (
+    addonName === "extraIngredients" &&
+    menuItem &&
+    menuItem.extraIngredients.length > 0
+  ) {
+    init = menuItem.extraIngredients;
+  }
+
+  const [addons, setAddons] = useState<AddonType[]>(init);
   const [isOpen, setIsOpen] = useState(true);
-  const [addonslocal, setAddonslocal] = useState<AddonType[]>([]);
+
+  // console.log("MenuItemAddons init", init);
+  // console.log("MenuItemAddons addons", addons);
+
+  useEffect(() => {
+    setMenuItem((prev: any) => ({ ...prev, [addonName]: addons }));
+  }, [addons]);
 
   const addAddon = ({ name, price }: AddonType) => {
     setAddons((prev: AddonType[]) => [...prev, { name, price }]);
@@ -25,7 +51,6 @@ const MenuItemAddons = ({ propName, addLabel, addons, setAddons }: Props) => {
   function editAddon(
     ev: React.ChangeEvent<HTMLInputElement>,
     index: number
-    // property: "name" | "price"
   ): void {
     setAddons((prev: AddonType[]) => {
       const newSizes = [...prev];
@@ -51,67 +76,37 @@ const MenuItemAddons = ({ propName, addLabel, addons, setAddons }: Props) => {
           onClick={() => setIsOpen((prev) => !prev)}
           className="p-0 bg-white rounded-full shadow-md hover:cursor-pointer "
         >
-          {isOpen ? <Up className="w-4 h-4" /> : <Down className="w-4 h-4" />}
+          <Up
+            className={cn("w-4 h-4 transition-all duration-500", {
+              "rotate-180": !isOpen,
+            })}
+          />
+
+          {/* {isOpen ? (
+            <Up className="w-4 h-4 transition-all duration-500" />
+          ) : (
+            <Up className="w-4 h-4 rotate-180 transition-all duration-500" />
+          )} */}
         </span>
 
-        <span className="text-gray-500 font-semibold border-2 ">
-          {propName}
+        <span className="text-gray-500 font-semibold border-2 capitalize ">
+          {addonName}
         </span>
         <span>({addons?.length})</span>
       </div>
-      <div className={cn({ hidden: !isOpen })}>
+      <div className={cn("transition-all", { hidden: !isOpen })}>
         {addons &&
           addons?.length > 0 &&
           addons.map((size: AddonType, index) => (
-            <div
-              key={index + size.name + size.price}
-              className="flex items-center gap-2"
-            >
-              <div className="relative">
-                <label
-                  htmlFor="sizename"
-                  className="text-gray-400 text-sm absolute top-0 left-2"
-                >
-                  Name
-                </label>
-                <input
-                  id="sizename"
-                  name="name"
-                  type="text"
-                  placeholder="Addon name"
-                  value={size.name}
-                  onChange={(ev) => editAddon(ev, index)}
-                  className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100"
-                />
-              </div>
-
-              <div className="relative">
-                <label
-                  htmlFor="sizeprice"
-                  className="text-gray-400 text-sm absolute top-0 left-2"
-                >
-                  Extra price
-                </label>
-                <input
-                  id="sizeprice"
-                  name="price"
-                  type="text"
-                  placeholder="Extra price"
-                  value={size.price}
-                  onChange={(ev) => editAddon(ev, index)}
-                  className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100"
-                />
-              </div>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => removeAddon(index)}
-                  className="bg-gray-100 w-10 p-1 rounded-lg border border-gray-300 hover:border-primary "
-                >
-                  <TrashIcon className="text-red-500" />
-                </button>
-              </div>
-            </div>
+            <AddonItem
+              addon={size}
+              addonLabel={addonLabel}
+              className="flex gap-2 items-center"
+              editAddon={editAddon}
+              removeAddon={removeAddon}
+              index={index}
+              key={index}
+            />
           ))}
         <Button
           type="button"
@@ -119,7 +114,7 @@ const MenuItemAddons = ({ propName, addLabel, addons, setAddons }: Props) => {
           className="flex items-center justify-center gap-2 border border-primary hover:text-primary hover:bg-inherit"
         >
           <PlusIcon className="w-4 h-4" />
-          <span>{addLabel}</span>
+          <span>add more {addonName}</span>
         </Button>
       </div>
     </div>

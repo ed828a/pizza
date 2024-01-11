@@ -30,7 +30,7 @@ const menuItemSchema = new Schema(
         },
       ],
     },
-    extraIngredientPrices: {
+    extraIngredients: {
       type: [
         {
           name: String,

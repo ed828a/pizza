@@ -25,6 +25,14 @@ const LabelSelect = ({
   disabled,
   defaultValue,
 }: Props) => {
+  // const choosed = opions.find((o) => o.id === value);
+
+  // console.log("choosed", choosed);
+  // console.log("value", value);
+
+  // const firstLabel =
+  //   opions.find((o) => o.id === id)?.name || "choose a category";
+
   return (
     <div className="relative pt-1">
       <label

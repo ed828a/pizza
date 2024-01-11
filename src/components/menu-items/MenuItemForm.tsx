@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import LabelInput from "../share/LabelInput";
 import { useFormState } from "react-dom";
 import LabelSelect from "../share/LabelSelect";
@@ -23,54 +23,47 @@ const MenuItemForm = ({
   categories,
   disableSubmit,
 }: Props) => {
-  const [sizes, setSizes] = useState(menuItem?.sizes || []);
-  const [extraIngredients, setExtraIngredients] = useState(
-    menuItem?.extraIngredients || []
-  );
-
   const createOrUpdateMenuItemActionWithId = createOrUpdateMenuItemAction.bind(
     null,
     menuItem?.id
   );
 
-  const [state, dispatch] = useFormState(
-    createOrUpdateMenuItemActionWithId,
-    {}
-  );
+  const [state, dispatch] = useFormState(createOrUpdateMenuItemActionWithId, {
+    message: "",
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMenuItem((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const addAddon = ({ name, price }: AddonType) => {
-    setSizes((prev: AddonType[]) => [...prev, { name, price }]);
-  };
+  console.log("MenuItemForm menuItem", menuItem);
+  console.log("MenuItemForm state", state);
+  console.log("MenuItemForm categories", categories);
 
-  function editAddon(
-    ev: React.ChangeEvent<HTMLInputElement>,
-    index: number
-    // property: "name" | "price"
-  ): void {
-    setSizes((prev: AddonType[]) => {
-      const newSizes = [...prev];
-      const a = newSizes[index];
-      newSizes[index] = { ...a, [ev.target.name]: ev.target.value };
-      console.log("newSize", newSizes);
-      return newSizes;
-    });
-    console.log(ev.target.name, ev.target.value);
-  }
-
-  function removeAddon(index: number) {
-    //@ts-expect-error
-    setSizes((prev: any) => prev.filter((v, i: number) => i !== index));
-  }
-
-  console.log("MenuItemForm sizes", sizes);
-  console.log("extraIngredients", extraIngredients);
   return (
     <div className="grow flex justify-center items-center">
-      <form action={dispatch}>
+      <form
+        action={(formData: FormData) => {
+          if (menuItem?.image) {
+            formData.append("image", menuItem?.image);
+          }
+          if (menuItem?.sizes && menuItem.sizes.length > 0) {
+            formData.append("sizes", JSON.stringify(menuItem.sizes));
+          }
+
+          if (
+            menuItem?.extraIngredients &&
+            menuItem.extraIngredients.length > 0
+          ) {
+            formData.append(
+              "extraIngredients",
+              JSON.stringify(menuItem.extraIngredients)
+            );
+          }
+
+          dispatch(formData);
+        }}
+      >
         <div className="flex flex-col gap-4 pl-2">
           <LabelInput
             label="Name"
@@ -86,7 +79,7 @@ const MenuItemForm = ({
             id="description"
             name="description"
             type="text"
-            value={menuItem?.description}
+            value={menuItem?.description || ""}
             handleChange={handleChange}
           />
           <LabelSelect
@@ -118,17 +111,18 @@ const MenuItemForm = ({
           />
           <div className="w-[400px]">
             <MenuItemAddons
-              propName="Sizes"
-              addLabel="Add item size"
-              addons={sizes}
-              setAddons={setSizes}
+              addonName="sizes"
+              addonLabel="Add item size"
+              setMenuItem={setMenuItem}
+              menuItem={menuItem}
             />
-            {/* <MenuItemAddons
-              propName="Extra Ingredients"
-              addLabel="Add more ingredients"
-              addons={extraIngredients}
-              setAddons={setExtraIngredients}
-            /> */}
+
+            <MenuItemAddons
+              addonName="extraIngredients"
+              addonLabel="Add item extra ingredients"
+              setMenuItem={setMenuItem}
+              menuItem={menuItem}
+            />
           </div>
           <LabelCheckbox
             label="Best Seller"
@@ -136,7 +130,7 @@ const MenuItemForm = ({
             name="bestSeller"
             type="checkbox"
             className="accent-primary"
-            checked={menuItem?.bestSeller}
+            checked={menuItem?.bestSeller || false}
             handleChange={(e) =>
               setMenuItem((prev: any) => ({
                 ...prev,
@@ -151,7 +145,7 @@ const MenuItemForm = ({
               type="submit"
               disabled={disableSubmit}
             >
-              {menuItem?.id ? "create" : "update"}
+              {menuItem?.id ? "update" : "create"}
             </Button>
 
             {/* <DeleteButton

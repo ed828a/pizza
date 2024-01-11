@@ -1,9 +1,9 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import MenuItemImageUpload from "./MenuItemImageUpload";
 import MenuItemForm from "./MenuItemForm";
-import MenuItemForm2 from "./MenuItemForm2";
+import { disableSubmitMenuItems } from "@/lib/utils";
 
 type Props = {
   categories: { id: string; name: string }[];
@@ -12,23 +12,45 @@ type Props = {
 
 const MenuItemDetails = ({ categories, originalMenuItem }: Props) => {
   const init = originalMenuItem ? originalMenuItem : null;
+  console.log("init", init);
   const [menuItem, setMenuItem] = useState<MenuItemType | null>(init);
+  useEffect(() => {
+    if (init) {
+      setMenuItem((prev: any) => ({
+        ...prev,
+        sizes: [...init.sizes],
+        extraIngredients: [...init.extraIngredients],
+      }));
+    }
+  }, [init]);
 
-  const enableSubmit =
-    menuItem?.name !== originalMenuItem?.name ||
-    menuItem?.image !== originalMenuItem?.image ||
-    menuItem?.description !== originalMenuItem?.description ||
-    menuItem?.category !== originalMenuItem?.category ||
-    menuItem?.basePrice !== originalMenuItem?.basePrice ||
-    menuItem?.bestSeller !== originalMenuItem?.bestSeller ||
-    menuItem?.sizes !== originalMenuItem?.sizes ||
-    menuItem?.extraIngredients !== originalMenuItem?.extraIngredients;
+  console.log("MenuItemDetails menuItem", menuItem);
 
-  console.log("enableSubmit", enableSubmit);
+  let disabledSubmit: boolean;
+  if (originalMenuItem) {
+    disabledSubmit = disableSubmitMenuItems(menuItem, originalMenuItem);
+    console.log("disableSubmit case 1", disabledSubmit);
+  } else {
+    if (menuItem) {
+      disabledSubmit =
+        menuItem.name?.length === 0 ||
+        menuItem.image?.length === 0 ||
+        menuItem.description?.length === 0 ||
+        menuItem.category?.length === 0 ||
+        menuItem.basePrice?.length === 0;
+      console.log("disableSubmit case 2", disabledSubmit);
+    } else {
+      disabledSubmit = true;
+    }
+  }
+
+  console.log("disableSubmit", disabledSubmit);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMenuItem((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  console.log("MenuItemDetails originalMenuItem", originalMenuItem);
 
   return (
     <div className=" ">
@@ -38,14 +60,8 @@ const MenuItemDetails = ({ categories, originalMenuItem }: Props) => {
           menuItem={menuItem}
           setMenuItem={setMenuItem}
           categories={categories}
-          disableSubmit={!enableSubmit}
+          disableSubmit={disabledSubmit}
         />
-        {/* <MenuItemForm2
-          itemState={menuItem!}
-          setItemState={setMenuItem}
-          categories={categories}
-          handleChange={handleChange}
-        /> */}
       </div>
     </div>
   );

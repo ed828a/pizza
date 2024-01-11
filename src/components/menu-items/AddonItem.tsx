@@ -2,24 +2,24 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 type Props = {
+  addonLabel: string;
   addon: AddonType;
+  editAddon: (e: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+  removeAddon: (index: number) => void;
   className: string;
-  setAddons: React.Dispatch<React.SetStateAction<AddonType[]>>;
+  // setAddons: React.Dispatch<React.SetStateAction<AddonType[]>>;
   index: number;
 };
 
-const AddonItem = ({ addon, className, setAddons, index }: Props) => {
+const AddonItem = ({
+  addonLabel,
+  addon,
+  editAddon,
+  removeAddon,
+  className,
+  index,
+}: Props) => {
   //   const [addon, setAddon] = useState<AddonType>({ name: "", price: "" });
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAddons((prev: AddonType[]) => {
-      const newSizes = [...prev];
-      const a = newSizes[index];
-      newSizes[index] = { ...a, [e.target.name]: e.target.value };
-      console.log("newSize", newSizes);
-      return newSizes;
-    });
-  };
 
   return (
     <div className={className}>
@@ -36,7 +36,9 @@ const AddonItem = ({ addon, className, setAddons, index }: Props) => {
           type="text"
           placeholder="Addon name"
           value={addon.name}
-          onChange={handleChange}
+          onChange={(e) => {
+            editAddon(e, index);
+          }}
           className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100"
         />
       </div>
@@ -54,14 +56,16 @@ const AddonItem = ({ addon, className, setAddons, index }: Props) => {
           type="text"
           placeholder="Extra price"
           value={addon.price}
-          onChange={handleChange}
+          onChange={(e) => {
+            editAddon(e, index);
+          }}
           className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100"
         />
       </div>
       <div className="relative">
         <button
           type="button"
-          //   onClick={() => removeAddon(index)}
+          onClick={() => removeAddon(index)}
           className="bg-gray-100 w-10 p-1 rounded-lg border border-gray-300 hover:border-primary "
         >
           <TrashIcon className="text-red-500" />

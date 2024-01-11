@@ -1,28 +1,44 @@
 "use client";
-import React, { useState } from "react";
-import AddonItem from "../share/AddonItem";
+import React, { useEffect, useState } from "react";
 import Up from "../icons/Up";
 import Down from "../icons/Down";
 import { Button } from "../ui/button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
+import AddonItem from "./AddonItem";
 
 type Props = {
   addonName: string;
   addonLabel: string;
-  addons: AddonType[];
-  setAddons: React.Dispatch<React.SetStateAction<AddonType[]>>;
+  // addons: AddonType[];
+  // setAddons: React.Dispatch<React.SetStateAction<AddonType[]>>;
+  // addAddon: ({ name, price }: AddonType) => void;
+  // editAddon: (ev: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+  // removeAddon: (index: number) => void;
+  // isOpen: boolean;
+  // setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setMenuItem: React.Dispatch<any>;
 };
 
 const TestItemAddons = ({
   addonName,
   addonLabel,
-  addons,
-  setAddons,
+  // addons,
+  // setAddons,
+  // addAddon,
+  // editAddon,
+  // removeAddon,
+  // isOpen,
+  // setIsOpen,
+  setMenuItem,
 }: Props) => {
+  const [addons, setAddons] = useState<AddonType[]>([]);
   const [isOpen, setIsOpen] = useState(true);
-  //   const [addons, setAddons] = useState<AddonType[]>([]);
-  //   let addonsArray: AddonType[] = [];
+  useEffect(() => {
+    setMenuItem((prev: any) => ({ ...prev, [addonName]: addons }));
+  }, [addons]);
+
+  console.log("TestItemAddons called", addons);
 
   const addAddon = ({ name, price }: AddonType) => {
     setAddons((prev: AddonType[]) => [...prev, { name, price }]);
@@ -47,8 +63,6 @@ const TestItemAddons = ({
     setAddons((prev: any) => prev.filter((v, i: number) => i !== index));
   }
 
-  console.log("MenuItemAddons called", addons);
-
   return (
     <div className="bg-gray-200 p-2 rounded-md mb-2">
       <div className="flex items-center gap-2 ">
@@ -69,11 +83,13 @@ const TestItemAddons = ({
           addons?.length > 0 &&
           addons.map((size: AddonType, index) => (
             <AddonItem
-              key={index + size.name + size.price}
               addon={size}
-              className="flex items-center gap-2"
-              setAddons={setAddons}
+              addonLabel={addonLabel}
+              className="flex gap-2 items-center"
+              editAddon={editAddon}
+              removeAddon={removeAddon}
               index={index}
+              key={index}
             />
           ))}
         <Button
@@ -82,7 +98,7 @@ const TestItemAddons = ({
           className="flex items-center justify-center gap-2 border border-primary hover:text-primary hover:bg-inherit"
         >
           <PlusIcon className="w-4 h-4" />
-          <span>{addonLabel}</span>
+          <span>Add more {addonName}</span>
         </Button>
       </div>
     </div>

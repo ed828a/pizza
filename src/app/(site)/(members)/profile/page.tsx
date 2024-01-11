@@ -48,7 +48,7 @@ const ProfilePage = async (props: Props) => {
 
   return (
     <section className="section">
-      <ProfileForm user={user} callbackUrl="/profile" />
+      <ProfileForm user={user} callbackUrl="/" />
     </section>
   );
 };
