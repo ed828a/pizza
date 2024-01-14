@@ -31,7 +31,7 @@ const OrderDetailsContent = ({ order }: Props) => {
               isPaid={order.paid!}
             />
           </div>
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="bg-gray-100 p-4 rounded-lg dark:bg-inherit dark:border">
             <ShowAddress
               phone={order.phone!}
               streetAddress={order.streetAddress!}

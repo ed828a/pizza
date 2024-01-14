@@ -25,6 +25,8 @@ const CartContent = ({ profile }: Props) => {
     postcode: profile.postcode,
     country: profile.country,
   });
+  console.log("CartContent profile", profile);
+  console.log("CartContent addressInfo", addressInfo);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

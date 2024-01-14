@@ -91,8 +91,8 @@ const MenuItemComponent = ({ item }: Props) => {
 
       console.log("hasNoOptions", hasNoOptions);
       if (hasNoOptions) {
-        // toast.success("Added to cart");
         addToCart(item, selectedPrice);
+        toast.success("Added to cart");
       } else {
         setShowPopup(true);
       }

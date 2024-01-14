@@ -41,7 +41,9 @@ const MenuItemList = ({ menuItems, page }: Props) => {
                     priority
                   />
                 </div>
-                <div className="text-center">{item.name}</div>
+                <div className="text-center dark:text-gray-800">
+                  {item.name}
+                </div>
               </Link>
             ))
           : null}

@@ -50,11 +50,11 @@ export async function POST(req: Request) {
       }/orders/${orderDoc._id.toString()}?clear-cart=1`, // this url is where the app goes after payment succeeded.
       cancel_url: `${process.env.NEXTAUTH_URL}/cart?cancelled=1`, // this url is where the app goes when the payment is cancelled
       metadata: {
-        orderId: orderDoc._id.toString(),
+        orderId: orderDoc._id.toString(), // this orderId is for webhook
       },
       payment_intent_data: {
         metadata: {
-          orderId: orderDoc._id.toString(),
+          orderId: orderDoc._id.toString(), // this orderId is for webhook
         },
       },
       shipping_options: [

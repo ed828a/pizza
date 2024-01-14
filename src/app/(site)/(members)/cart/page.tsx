@@ -21,6 +21,7 @@ const CartPage = async (props: Props) => {
     image: user.image,
     phone: user.phone,
     streetAddress: user.streetAddress,
+    city: user.city,
     postcode: user.postcode,
     country: user.country,
   };

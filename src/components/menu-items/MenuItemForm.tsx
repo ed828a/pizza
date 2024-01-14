@@ -87,7 +87,7 @@ const MenuItemForm = ({
             id="description"
             name="description"
             type="text"
-            value={menuItem?.description || ""}
+            value={menuItem?.description || "tell something about the menu"}
             handleChange={handleChange}
           />
           <LabelSelect
@@ -102,7 +102,7 @@ const MenuItemForm = ({
               }))
             }
             opions={categories}
-            className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100"
+            className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100 dark:text-gray-800"
           />
           <LabelMoneyInput
             label="Base Price"
@@ -114,7 +114,6 @@ const MenuItemForm = ({
                 ? menuItem.basePrice.toString()
                 : ""
             }
-            // value={menuItem?.basePrice || 0}
             handleChange={handleChange}
           />
           <div className="w-[400px]">

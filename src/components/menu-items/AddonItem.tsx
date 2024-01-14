@@ -39,7 +39,7 @@ const AddonItem = ({
           onChange={(e) => {
             editAddon(e, index);
           }}
-          className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100"
+          className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100 dark:text-gray-800"
         />
       </div>
 
@@ -59,7 +59,7 @@ const AddonItem = ({
           onChange={(e) => {
             editAddon(e, index);
           }}
-          className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100"
+          className="block w-full my-4 rounded-xl border p-2 border-gray-300 bg-gray-100 dark:text-gray-800"
         />
       </div>
       <div className="relative">

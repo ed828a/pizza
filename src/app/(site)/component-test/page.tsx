@@ -1,12 +1,11 @@
 import LoadingSpinner from "@/components/icons/LoadingSpinner";
-import { ReloadIcon } from "@radix-ui/react-icons";
 import React from "react";
 
 type Props = {};
 
-const RootLoading = (props: Props) => {
+const ComponentTestPage = (props: Props) => {
   return (
-    <section className="w-screen h-screen flex flex-col justify-center items-center">
+    <section className="section w-full h-2/3">
       <div className="">
         <LoadingSpinner className="w-24 h-24 text-primary" />
         <h1 className="uppercase mt-4">Loading...</h1>
@@ -15,4 +14,4 @@ const RootLoading = (props: Props) => {
   );
 };
 
-export default RootLoading;
+export default ComponentTestPage;

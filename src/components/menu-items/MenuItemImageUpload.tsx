@@ -52,10 +52,9 @@ const MenuItemImageUpload = ({ menuItem, setMenuItem }: Props) => {
 
   return (
     <div>
-      {" "}
       <div className="p-4">
         <div className="flex flex-col justify-between ">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center ">
             <Image
               src={
                 menuItem?.image ? menuItem.image : "/images/default_picture.png"
@@ -63,7 +62,7 @@ const MenuItemImageUpload = ({ menuItem, setMenuItem }: Props) => {
               width={180}
               height={180}
               alt="avatar"
-              className="rounded-lg mb-2 "
+              className="rounded-lg mb-2 dark:bg-gray-300 "
             />
             <label className="w-full">
               <input

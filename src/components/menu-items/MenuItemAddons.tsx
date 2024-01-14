@@ -77,22 +77,19 @@ const MenuItemAddons = ({
           className="p-0 bg-white rounded-full shadow-md hover:cursor-pointer "
         >
           <Up
-            className={cn("w-4 h-4 transition-all duration-500", {
-              "rotate-180": !isOpen,
-            })}
+            className={cn(
+              "w-4 h-4 transition-all duration-500 dark:text-gray-700",
+              {
+                "rotate-180": !isOpen,
+              }
+            )}
           />
-
-          {/* {isOpen ? (
-            <Up className="w-4 h-4 transition-all duration-500" />
-          ) : (
-            <Up className="w-4 h-4 rotate-180 transition-all duration-500" />
-          )} */}
         </span>
 
-        <span className="text-gray-500 font-semibold border-2 capitalize ">
+        <span className="text-gray-500 font-semibold capitalize  ">
           {addonName}
         </span>
-        <span>({addons?.length})</span>
+        <span className="dark:text-gray-800">({addons?.length})</span>
       </div>
       <div className={cn("transition-all", { hidden: !isOpen })}>
         {addons &&

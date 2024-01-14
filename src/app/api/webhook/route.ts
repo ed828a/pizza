@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import dbConnect from "@/lib/dbConnect";
 import Order from "@/models/order";
+import { revalidatePath } from "next/cache";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -50,7 +51,8 @@ export async function POST(req: Request) {
           { new: true }
         );
 
-        return NextResponse.json(updatedOrder); // no need to reply
+        revalidatePath(`/orders/${orderId}`);
+        return NextResponse.json(updatedOrder); // updatedOrder no need to reply
       }
     }
 

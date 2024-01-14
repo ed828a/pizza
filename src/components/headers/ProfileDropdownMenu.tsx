@@ -31,7 +31,7 @@ const ProfileDropdownMenu = (props: Props) => {
           <ProfileAvatar />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 mr-4 mt-2 bg-gray-50 dark:bg-inherit">
+      <DropdownMenuContent className="w-56 mr-4 mt-2 bg-gray-50 dark:bg-gray-800/80">
         <DropdownMenuLabel
           className={cn(dancingScript.className, "w-full flex gap-4 text-xl")}
         >
