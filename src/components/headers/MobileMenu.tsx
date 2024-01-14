@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,9 +19,8 @@ import { cn, dancingScript } from "@/lib/utils";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import RegisterButton from "./RegisterButton";
 import SignInOutButton from "./SignInOutButton";
-import { Session } from "next-auth";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type Props = {
   userName: string;
@@ -27,6 +28,7 @@ type Props = {
 
 const MobileMenu = ({ userName }: Props) => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   return (
     <DropdownMenu>
@@ -35,7 +37,7 @@ const MobileMenu = ({ userName }: Props) => {
           <HamburgerMenuIcon className="text-primary" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-72 mr-4 mt-2 bg-gray-50 dark:bg-inherit">
+      <DropdownMenuContent className="w-72 mr-4 mt-2 bg-gray-50 dark:bg-gray-900/90">
         <DropdownMenuLabel
           className={cn(dancingScript.className, "w-full flex gap-4 text-xl")}
         >
@@ -48,44 +50,69 @@ const MobileMenu = ({ userName }: Props) => {
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => router.push("/")}>
             Home
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <DropdownMenuShortcut>⇧⌘H</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/menu")}>
             Menu
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+            <DropdownMenuShortcut>⌘M</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/#about")}>
             About
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/#contact")}>
             Contact
-            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+            <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Message</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>More...</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuItem>
-            New Team
-            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+        {session ? (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={() => router.push("/profile")}>
+                Profile
+                <DropdownMenuShortcut>⌘+P</DropdownMenuShortcut>
+              </DropdownMenuItem>
+
+              {session.user.role === "admin" ? (
+                <>
+                  <DropdownMenuItem onClick={() => router.push("/categories")}>
+                    Categories
+                    <DropdownMenuShortcut>⌘+K</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/menu-items")}>
+                    Menu Items
+                    <DropdownMenuShortcut>⌘+I</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/users")}>
+                    Users
+                    <DropdownMenuShortcut>⌘+U</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </>
+              ) : null}
+
+              <DropdownMenuItem onClick={() => router.push("/orders")}>
+                Orders
+                <DropdownMenuShortcut>⌘+O</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </>
+        ) : null}
+
         <DropdownMenuSeparator />
         <DropdownMenuItem>GitHub</DropdownMenuItem>
-        <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuItem disabled>API</DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem>Email</DropdownMenuItem>
+              <DropdownMenuItem>Message</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>More...</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem className={cn("flex", "justify-between")}>
           <RegisterButton className="" />

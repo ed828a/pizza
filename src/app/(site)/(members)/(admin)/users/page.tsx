@@ -1,14 +1,15 @@
 import UserList from "@/components/users/UserList";
-import { toPOJO } from "@/lib/utils";
+import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
 import React from "react";
 
 type Props = {};
 
 const UsersPage = async (props: Props) => {
+  await dbConnect();
   const userArray = await User.find();
   const users = userArray
-    .map((obj) => toPOJO(obj))
+    .map((obj) => obj.toObject())
     .map((item: any, index) => {
       console.log(`item[${index}]:`, item);
       return {

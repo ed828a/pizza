@@ -131,44 +131,38 @@ const ProfileForm = ({ user, callbackUrl }: Props) => {
   console.log("ProfileForm sessionUser", sessionUser);
 
   return (
-    <div className="w-full max-w-screen-md flex flex-col  ">
+    <div className="w-full max-w-screen-md flex flex-col transition-all duration-500  ">
       <Link href={callbackUrl} className="self-end mr-8  h-4">
         <LeftArrow className="text-primary w-10 h-6 ml-auto " />
       </Link>
 
       <div className="flex flex-col sm:flex-row gap-4 items-stretch justify-center ">
-        <div className="p-4">
-          <div className="flex flex-col justify-between ">
-            <div className="flex flex-col items-center">
-              <Image
-                src={
-                  userData.userImage
-                    ? userData.userImage
-                    : "/images/profile.jpg"
-                }
-                width={180}
-                height={180}
-                alt="avatar"
-                className="rounded-lg mb-2 "
-              />
-              <label className="w-full">
-                <input
-                  id="image"
-                  name="image"
-                  type="file"
-                  className="hidden"
-                  onChange={handleImageChange}
-                />
-                <span className="block border border-gray-300 hover:border-primary rounded-lg p-2 text-center text-gray-400 hover:text-primary cursor-pointer">
-                  Edit
-                </span>
-              </label>
-            </div>
-          </div>
+        <div className="flex flex-col items-center gap-4 sm:mt-4 flex-grow">
+          <Image
+            src={
+              userData.userImage ? userData.userImage : "/images/profile.jpg"
+            }
+            width={180}
+            height={180}
+            alt="avatar"
+            className="rounded-lg mb-2 "
+          />
+          <label className="w-full max-w-[360px]">
+            <input
+              id="image"
+              name="image"
+              type="file"
+              className="hidden"
+              onChange={handleImageChange}
+            />
+            <span className="block border border-gray-300 hover:border-primary rounded-lg p-2 text-center text-gray-400 hover:text-primary cursor-pointer">
+              Edit
+            </span>
+          </label>
         </div>
         <div className="flex justify-center items-center px-4">
           <form action={dispatch}>
-            <div className="flex flex-col gap-4 p-2">
+            <div className="flex flex-col gap-4 sm:p-2">
               <LabelInput
                 label="Full name"
                 id="username"
@@ -178,7 +172,7 @@ const ProfileForm = ({ user, callbackUrl }: Props) => {
                 handleChange={handleChange}
                 placeholder="First and last name"
               />
-              <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
                 <LabelInput
                   label="Email"
                   id="email"
@@ -218,7 +212,7 @@ const ProfileForm = ({ user, callbackUrl }: Props) => {
                 placeholder="Street address"
               />
 
-              <div className="flex flex-col sm:flex-row gap-x-4 ">
+              <div className="flex flex-col sm:flex-row gap-4 ">
                 <LabelInput
                   label="City"
                   id="city"
@@ -250,7 +244,7 @@ const ProfileForm = ({ user, callbackUrl }: Props) => {
                 />
               </div>
 
-              <Button type="submit" disabled={!enableSubmit}>
+              <Button type="submit" disabled={!enableSubmit} className="mt-4">
                 Save
               </Button>
             </div>

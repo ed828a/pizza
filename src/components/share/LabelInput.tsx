@@ -37,7 +37,7 @@ const LabelInput = ({
         type={type}
         id={id}
         className={cn(
-          " rounded-lg border-transparent flex-1 appearance-none border border-gray-300 hover:border-primary w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-primary  hover:disabled:border-gray-300 focus:border-transparent",
+          "rounded-lg border-transparent flex-1 appearance-none border border-gray-300 hover:border-primary w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-primary  hover:disabled:border-gray-300 focus:border-transparent",
           className
         )}
         name={name}

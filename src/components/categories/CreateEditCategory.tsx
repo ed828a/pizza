@@ -55,7 +55,7 @@ const CreateEditCategory = ({ focusedCategory, setFocusedCategory }: Props) => {
 
   return (
     <div>
-      <form action={dispatch} className="min-w-[512px]">
+      <form action={dispatch} className="min-w-[320px] sm:min-w-[512px]">
         <label htmlFor="name" className="text-sm text-gray-500 capitalize">
           {`${isNew ? "New " : " "}category name`}
         </label>

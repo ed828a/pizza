@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { cn, dancingScript } from "@/lib/utils";
 import { ModeToggleButton } from "./ModeToggleButton";
 import Image from "next/image";
@@ -17,11 +17,22 @@ import { buttonVariants } from "../ui/button";
 type Props = {};
 
 const Topbar = (props: Props) => {
-  const userName = "edward";
+  const [isMounted, setIsMounted] = useState(false);
+  const { cartProducts } = useContext(CartContext) as CartContextType;
   const { data: session } = useSession();
   console.log("Topbar session", session);
 
-  const { cartProducts } = useContext(CartContext) as CartContextType;
+  useEffect(() => {
+    setIsMounted(true);
+
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
+
+  if (!isMounted) return null;
+
+  const ownerName = "edward";
 
   return (
     <div className="pt-4 ">
@@ -45,7 +56,7 @@ const Topbar = (props: Props) => {
           >
             <span className={``}>Welcome</span>
             <span className="text-primary capitalize font-bold text-3xl">
-              {userName}
+              {ownerName}
             </span>
           </Link>
 
@@ -84,7 +95,7 @@ const Topbar = (props: Props) => {
             <ModeToggleButton />
 
             <div className="block sm:hidden">
-              <MobileMenu userName={userName} />
+              <MobileMenu userName={ownerName} />
             </div>
           </nav>
         </div>

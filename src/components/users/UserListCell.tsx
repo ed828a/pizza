@@ -15,7 +15,7 @@ type Props = {
 
 const UserListCell = ({ user }: Props) => {
   return (
-    <div className="min-w-96 w-[512px] bg-gray-200 rounded-lg mb-2 py-2  px-4 flex justify-between items-center dark:bg-inherit dark:border">
+    <div className="min-w-96 w-[320px] sm:w-[512px] bg-gray-200 rounded-lg mb-2 py-2  px-4 flex justify-between items-center dark:bg-inherit dark:border">
       <div className="flex flex-col">
         <div className="text-gray-700 dark:text-white">
           {!!user.name ? (
