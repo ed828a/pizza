@@ -13,7 +13,7 @@ const MembersLayout = async ({ children }: Props) => {
   // console.log("MembersLayout session", session);
 
   if (!session || !session.user) {
-    return redirect("/login");
+    return redirect("/api/auth/signin");
   }
 
   await dbConnect();

@@ -12,6 +12,7 @@ type Props = {
   placeholder?: string;
   disabled?: boolean;
   defaultValue?: string | undefined;
+  readOnly?: boolean;
 };
 
 const LabelInput = ({
@@ -25,6 +26,7 @@ const LabelInput = ({
   placeholder,
   disabled,
   defaultValue,
+  readOnly,
 }: Props) => {
   return (
     <div className=" relative ">
@@ -44,6 +46,7 @@ const LabelInput = ({
         value={value}
         disabled={disabled}
         defaultValue={defaultValue}
+        readOnly={readOnly}
       />
     </div>
   );

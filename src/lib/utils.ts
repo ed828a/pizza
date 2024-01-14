@@ -222,3 +222,10 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export const dbTimePretter = (dateString: string) => {
+  const date = new Date(dateString).toLocaleDateString();
+  const time = new Date(dateString).toLocaleTimeString();
+
+  return { date, time };
+};

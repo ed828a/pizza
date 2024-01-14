@@ -27,7 +27,7 @@ const ProfileDropdownMenu = (props: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="">
+        <div className="hover:border-primary border border-transparent rounded-full">
           <ProfileAvatar />
         </div>
       </DropdownMenuTrigger>

@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
         return {
           ...profile,
           role: userRole,
-          image,
+          image: image,
         };
       },
     }),
@@ -211,8 +211,8 @@ export const authOptions: NextAuthOptions = {
       // });
 
       // this is the case of signin
-      if (user && trigger === "signIn") {
-        console.log("user.image", user.image);
+      if (user && (trigger === "signIn" || trigger === "signUp")) {
+        // console.log("user.image", user.image);
         if (user.image) {
           token.image = user.image;
         }
@@ -250,5 +250,5 @@ export const authOptions: NextAuthOptions = {
   },
 
   events: {},
-  debug: false,
+  debug: true,
 };

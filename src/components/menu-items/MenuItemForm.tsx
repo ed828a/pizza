@@ -9,6 +9,7 @@ import MenuItemAddons from "./MenuItemAddons";
 import LabelCheckbox from "../share/LabelCheckbox";
 import { Button } from "../ui/button";
 import LabelMoneyInput from "../share/LabelMoneyInput";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   menuItem: MenuItemType | null;
@@ -40,6 +41,10 @@ const MenuItemForm = ({
   console.log("MenuItemForm state", state);
   console.log("MenuItemForm categories", categories);
 
+  const searchParams = useSearchParams();
+  const callbackQuery = searchParams.get("page");
+  console.log("callbackQuery", callbackQuery);
+
   return (
     <div className="grow flex justify-center items-center">
       <form
@@ -59,6 +64,9 @@ const MenuItemForm = ({
               "extraIngredients",
               JSON.stringify(menuItem.extraIngredients)
             );
+          }
+          if (callbackQuery) {
+            formData.append("page", callbackQuery);
           }
 
           dispatch(formData);

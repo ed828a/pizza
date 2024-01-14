@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import React, { ReactNode } from "react";
 import { buttonVariants } from "../ui/button";
@@ -14,12 +15,12 @@ const LinkButton = ({ children, href }: Props) => {
   return (
     <Link
       className={cn(
-        "text-primary hover:border-primary ",
         buttonVariants({ variant: "outline" }),
         {
           active: pathname.startsWith(href),
         },
-        "hover:text-primary hover:dark:text-inherit rounded-full"
+        "text-primary rounded-full",
+        "hover:text-primary hover:border-primary hover:dark:text-inherit"
       )}
       href={href}
     >

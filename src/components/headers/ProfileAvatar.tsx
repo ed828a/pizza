@@ -16,7 +16,10 @@ const ProfileAvatar = ({ src }: Props) => {
 
   return (
     <Avatar>
-      <AvatarImage src={user ? user.image : "/images/profile.jpg"} />
+      <AvatarImage
+        src={user ? user.image : "/images/profile.jpg"}
+        className=""
+      />
       <AvatarFallback>profile</AvatarFallback>
     </Avatar>
   );

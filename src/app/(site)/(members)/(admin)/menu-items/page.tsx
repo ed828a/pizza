@@ -36,10 +36,13 @@ const MenuItemsPage = async ({ searchParams }: Props) => {
     bestSeller: m.bestSeller,
   }));
 
+  const page = searchParams?.page;
+  console.log("page", page);
+
   return (
     <section className="section flex-col">
       <CreateMenuItemLink />
-      <MenuItemList menuItems={items} />
+      <MenuItemList menuItems={items} page={page} />
       <Pagination totalPages={totalPages} />
     </section>
   );

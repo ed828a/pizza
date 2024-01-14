@@ -1,13 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { headers } from "next/headers";
 
 type Props = {
   menuItems: any[];
+  page: string | undefined;
 };
 
-const MenuItemList = ({ menuItems }: Props) => {
+const MenuItemList = ({ menuItems, page }: Props) => {
   // console.log("menuItems", menuItems);
+  let query = "";
+  try {
+    if (page && Number(page)) {
+      query = `?page=${page}`;
+    }
+    console.log("query", query);
+  } catch (error: any) {
+    console.log("MenuItemList error", error.message);
+  }
+
   return (
     <div className="min-w-[300px] sm:min-w-[600px] md:min-w-[720px] lg:min-w-[980px]">
       <h2 className="text-sm text-gray-500 mt-8">Edit menu item:</h2>
@@ -16,7 +28,7 @@ const MenuItemList = ({ menuItems }: Props) => {
           ? menuItems.map((item: any) => (
               <Link
                 key={item.id}
-                href={`/menu-items/edit/${item.id}`}
+                href={`/menu-items/edit/${item.id}${query}`}
                 className="bg-gray-200 p-4 rounded-lg hover:bg-white hover:shadow-lg hover:shadow-gray-500 transition-all"
               >
                 <div className="relative">

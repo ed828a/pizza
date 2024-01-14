@@ -1,51 +1,102 @@
-"use client";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { buttonVariants } from "@/components/ui/button";
+import dbConnect from "@/lib/dbConnect";
+import { cn, dbTimePretter } from "@/lib/utils";
+import Order from "@/models/order";
+import { RocketIcon } from "@radix-ui/react-icons";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
-import BasicModal from "@/components/share/BasicModal";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import React, { useState } from "react";
+import React from "react";
 
 type Props = {};
 
-const OrdersPage = (props: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+const OrdersPage = async (props: Props) => {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    redirect("/api/auth/signin");
+  }
 
-  const openModal = () => {
-    setIsOpen(true);
-  };
+  const userEmail = session?.user?.email;
 
-  const closeModal = () => {
-    setIsOpen(false);
-  };
+  await dbConnect();
+  const ordersFrmDB = await Order.find({ userEmail: userEmail });
+  if (!ordersFrmDB) {
+    return (
+      <section className="section">
+        <Alert className="max-w-2xl h-56 flex flex-col justify-between p-12 bg-gray-100">
+          <div className="flex justify-center items-center gap-2 ">
+            <RocketIcon className="h-4 w-4" style={{ color: "#ff0000" }} />
+            <AlertTitle className="text-primary font-semibold text-2xl">
+              Alert!
+            </AlertTitle>
+          </div>
+          <AlertDescription className="text-center text-xl mb-4">
+            Not found any orders, please check later.
+          </AlertDescription>
+        </Alert>
+      </section>
+    );
+  }
+
+  const orders = ordersFrmDB.map((o) => o.toObject());
 
   return (
-    <div className="">
-      <button className="btn btn-danger" onClick={() => setIsOpen(true)}>
-        <TrashIcon /> Delete
-      </button>
-
-      <BasicModal open={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="text-center w-56 px-8">
-          <TrashIcon className="mx-auto text-red-500" />
-          <div className="mx-auto my-4 w-44">
-            <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
-            <p className="text-sm text-gray-500">
-              Are you sure you want to delete this item?
-            </p>
-          </div>
-          <div className="flex gap-8  w-full">
-            <button className="btn btn-danger  w-full  border hover:border-primary hover:text-primary rounded-md">
-              Delete
-            </button>
-            <button
-              className="btn btn-light  w-full  border rounded-md hover:border-primary hover:text-primary "
-              onClick={() => setIsOpen(false)}
+    <section className="section">
+      <div className="">
+        {orders.length > 0 &&
+          orders.map((order: any) => (
+            <div
+              className="bg-gray-100 mb-2 p-4 rounded-lg grid grid-cols-4 xs:grid-cols-5"
+              key={order._id}
             >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </BasicModal>
-    </div>
+              <div className="col-span-2">
+                <div className="">
+                  {order.userEmail !== userEmail && order.userEmail}
+                </div>
+                <div className="text-gray-500">
+                  {order.cartProducts.map((p: any) => p.name).join(", ")}
+                </div>
+              </div>
+              <div className="flex items-center justify-end ">
+                <span
+                  className={cn(
+                    "px-4 py-1 rounded-md text-white capitalize w-[100px] text-center",
+                    {
+                      "bg-green-500 border-green-500": order.paid,
+                      "bg-red-500 border-primary": !order.paid,
+                    }
+                  )}
+                >
+                  {order.paid ? "paid" : "pending"}
+                </span>
+              </div>
+              <div className="hidden xs:block">
+                <div className="flex flex-col items-end justify-center">
+                  {dbTimePretter(order.createdAt).date}
+                </div>
+                <div className="flex flex-col items-end justify-center">
+                  {dbTimePretter(order.createdAt).time}
+                </div>
+              </div>
+              <div className="text-center px-2 flex justify-end items-center">
+                <Link
+                  href={`/orders/${order._id}`}
+                  className={cn(
+                    "text-center border px-2 py-1 rounded-lg font-bold ",
+                    buttonVariants({ variant: "outline" }),
+                    "hover:border-primary hover:text-primary"
+                  )}
+                >
+                  Show order
+                </Link>
+              </div>
+            </div>
+          ))}
+      </div>
+    </section>
   );
 };
 

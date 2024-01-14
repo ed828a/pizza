@@ -35,6 +35,8 @@ export async function createOrUpdateMenuItemAction(
     extraIngredients = JSON.parse(extraIngredientsString);
   }
 
+  const page = JSON.parse(formData.get("page") as string);
+
   console.log({
     id,
     name,
@@ -45,6 +47,7 @@ export async function createOrUpdateMenuItemAction(
     bestSeller,
     sizes,
     extraIngredients,
+    page,
   });
 
   let message = "no error";
@@ -100,7 +103,9 @@ export async function createOrUpdateMenuItemAction(
 
   // Revalidate the cache for the invoices page and redirect the user.
   revalidatePath("/menu-items");
-  redirect("/menu-items"); // this is from throw exceptions
+  const callback = page ? (page as string) : "";
+  console.log("createOrUpdateMenuItemAction callback", callback);
+  redirect(`/menu-items?page=${callback}`); // this is from throw exceptions
 
   // return { message };
 }
