@@ -87,7 +87,7 @@ export async function POST_(req: Request) {
 }
 
 /* ********************************************** 8*/
-export async function POST(req: Request) {
+export async function _POST(req: Request) {
   console.log("/api/webhook POST");
 
   const headersList = headers();
