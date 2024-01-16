@@ -19,9 +19,20 @@ type Props = {
 const OrderDetailsPage = async ({ params, searchParams }: Props) => {
   const clearCart = searchParams["clear-cart"] === "1";
   const { orderId } = params;
+  console.log("orderId", orderId);
+  console.log("searchParams", searchParams);
 
-  await dbConnect();
-  const orderfrmDB = await Order.findById(orderId);
+  let orderfrmDB;
+  try {
+    await dbConnect();
+    orderfrmDB = await Order.findById(orderId);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    if (error! instanceof Error) console.log(error);
+    console.log(`❌ Error message: ${errorMessage}`);
+  }
 
   if (!orderfrmDB) {
     return (

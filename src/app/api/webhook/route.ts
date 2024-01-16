@@ -62,6 +62,7 @@ export async function POST(req: Request) {
         );
 
         revalidatePath(`/orders/${orderId}`);
+        console.log("path validated", `/orders/${orderId}`);
         return NextResponse.json(updatedOrder);
       } catch (error) {
         const errorMessage =
