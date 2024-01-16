@@ -25,6 +25,26 @@ export async function POST(req: Request) {
       "body.data.object.payment_status",
       pasredBody.data.object.payment_status
     );
+
+    if (pasredBody.type === "checkout.session.completed") {
+      const checkoutSessionCompleted = pasredBody.data.object;
+      console.log("checkoutSessionCompleted object", checkoutSessionCompleted);
+      console.log({ orderId: pasredBody.data?.object?.metadata?.orderId });
+      const orderId = pasredBody?.data?.object.metadata?.orderId;
+      const isPaid = pasredBody?.data?.object?.payment_status === "paid";
+      if (isPaid) {
+        await dbConnect();
+        const updatedOrder = await Order.findByIdAndUpdate(
+          orderId,
+          { paid: true },
+          { new: true }
+        );
+
+        revalidatePath(`/orders/${orderId}`);
+        return NextResponse.json(updatedOrder); // updatedOrder no need to reply
+      }
+    }
+
     // console.log(
     //   "process.env.STRIPE_WEBHOOK_SIGNING_SECRET:",
     //   process.env.STRIPE_WEBHOOK_SIGNING_SECRET
@@ -43,24 +63,24 @@ export async function POST(req: Request) {
     //            3. payment_intent.succeeded
     //            4. payment_intent.created
 
-    if (event.type === "checkout.session.completed") {
-      const checkoutSessionCompleted = event.data.object;
-      console.log("checkoutSessionCompleted object", checkoutSessionCompleted);
-      console.log({ orderId: event.data?.object?.metadata?.orderId });
-      const orderId = event?.data?.object.metadata?.orderId;
-      const isPaid = event?.data?.object?.payment_status === "paid";
-      if (isPaid) {
-        await dbConnect();
-        const updatedOrder = await Order.findByIdAndUpdate(
-          orderId,
-          { paid: true },
-          { new: true }
-        );
+    // if (event.type === "checkout.session.completed") {
+    //   const checkoutSessionCompleted = event.data.object;
+    //   console.log("checkoutSessionCompleted object", checkoutSessionCompleted);
+    //   console.log({ orderId: event.data?.object?.metadata?.orderId });
+    //   const orderId = event?.data?.object.metadata?.orderId;
+    //   const isPaid = event?.data?.object?.payment_status === "paid";
+    //   if (isPaid) {
+    //     await dbConnect();
+    //     const updatedOrder = await Order.findByIdAndUpdate(
+    //       orderId,
+    //       { paid: true },
+    //       { new: true }
+    //     );
 
-        revalidatePath(`/orders/${orderId}`);
-        return NextResponse.json(updatedOrder); // updatedOrder no need to reply
-      }
-    }
+    //     revalidatePath(`/orders/${orderId}`);
+    //     return NextResponse.json(updatedOrder); // updatedOrder no need to reply
+    //   }
+    // }
 
     return NextResponse.json("ok");
   } catch (err: any) {
