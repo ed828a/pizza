@@ -199,6 +199,7 @@ export const authOptions: NextAuthOptions = {
     },
     async redirect({ url, baseUrl }) {
       // the returned url is the url that after the user successfully logs in, the app redirects users to.
+
       return baseUrl;
     },
 

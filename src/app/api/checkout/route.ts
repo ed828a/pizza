@@ -41,6 +41,7 @@ export async function POST(req: Request) {
       });
     }
 
+    console.log("process.env.NEXTAUTH_URL", process.env.NEXTAUTH_URL);
     const stripeSession = await stripe.checkout.sessions.create({
       line_items: stripeLineItems,
       mode: "payment",
