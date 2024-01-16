@@ -24,6 +24,7 @@ const OrdersPage = async (props: Props) => {
 
     await dbConnect();
     const ordersFrmDB = await Order.find({ userEmail: userEmail });
+
     if (!ordersFrmDB) {
       return (
         <section className="section">

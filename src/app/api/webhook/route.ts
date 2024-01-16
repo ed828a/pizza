@@ -19,6 +19,12 @@ export async function POST(req: Request) {
 
     const body = await req.text();
     console.log("body", body);
+    const pasredBody = JSON.parse(body);
+    console.log("body.type", pasredBody.type);
+    console.log(
+      "body.data.object.payment_status",
+      pasredBody.data.object.payment_status
+    );
     // console.log(
     //   "process.env.STRIPE_WEBHOOK_SIGNING_SECRET:",
     //   process.env.STRIPE_WEBHOOK_SIGNING_SECRET
@@ -29,7 +35,7 @@ export async function POST(req: Request) {
       sig,
       process.env.STRIPE_WEBHOOK_SIGNING_SECRET
     );
-    console.log("event", event);
+    console.log("event.type", event.type);
 
     // event types:
     //            1. charge.succeeded
@@ -58,6 +64,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json("ok");
   } catch (err: any) {
+    console.log("webhook error:", err.message);
     return NextResponse.json(
       { error: `Webhook Error: ${err.message}` },
       { status: 400 }
