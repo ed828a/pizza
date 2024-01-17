@@ -22,7 +22,8 @@ const AddressInputs = ({ userState, setUserState }: Props) => {
         id="phone"
         name="phone"
         type="tel"
-        value={userState?.phone || "Phone number"}
+        placeholder="Phone number"
+        value={userState?.phone}
         handleChange={handleChange}
       />
       <LabelInput
@@ -30,7 +31,8 @@ const AddressInputs = ({ userState, setUserState }: Props) => {
         id="streetAddress"
         name="streetAddress"
         type="text"
-        value={userState?.streetAddress || "Street address"}
+        placeholder="Street address"
+        value={userState?.streetAddress}
         handleChange={handleChange}
       />
 
@@ -40,8 +42,8 @@ const AddressInputs = ({ userState, setUserState }: Props) => {
           id="city"
           name="city"
           type="text"
-          placeholder=""
-          value={userState?.city || "City"}
+          placeholder="City"
+          value={userState?.city}
           handleChange={handleChange}
         />
         <LabelInput
@@ -49,7 +51,8 @@ const AddressInputs = ({ userState, setUserState }: Props) => {
           id="postcode"
           name="postcode"
           type="text"
-          value={userState?.postcode || "Post code"}
+          placeholder="Post code"
+          value={userState?.postcode}
           handleChange={handleChange}
         />
       </div>
@@ -58,7 +61,8 @@ const AddressInputs = ({ userState, setUserState }: Props) => {
         id="country"
         name="country"
         type="text"
-        value={userState?.country || "Country"}
+        placeholder="Country"
+        value={userState?.country}
         handleChange={handleChange}
       />
     </div>
